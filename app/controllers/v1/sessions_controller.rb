@@ -1,6 +1,8 @@
 class V1::SessionsController < V1::ApiController
+  before_action :require_login, only: :destroy
+  
   def create
-    head(:unauthorized) unless
+    head :unauthorized unless
     @user = User.find_by_email(params[:email]) and
     @user.valid_password?(params[:password]) and
     @user.jwt_matcher = rand(1000000).to_s and
@@ -17,6 +19,6 @@ class V1::SessionsController < V1::ApiController
   end
   
   def destroy
-
+    unauthenticate_token
   end
 end
