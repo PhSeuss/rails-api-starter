@@ -9,10 +9,10 @@ class V1::ApiController < ApplicationController
   end
 
   def authenticate_token
-      (token = request.headers['Authorization']) &&
-      (token = token.split(' ').last) &&
-      (payload = JWT.decode(token, Rails.application.secrets.secret_key_base, { algorithm: 'HS256'}).first) &&
-      (user = User.find(payload['data']['user_id'])) &&
-      (user.jwt_matcher == payload['data']['jwt_matcher'])
+      auth_content = request.headers['Authorization'] and
+      token = auth_content.split(' ').last and
+      payload = JWT.decode(token, Rails.application.secrets.secret_key_base, { algorithm: 'HS256'}).first and
+      user = User.find(payload['data']['user_id']) and
+      user.jwt_matcher == payload['data']['jwt_matcher']
   end
 end
